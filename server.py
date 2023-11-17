@@ -3,6 +3,29 @@ import json
 import threading
 from settings import *
 
+from opentelemetry.instrumentation.wsgi import collect_request_attributes
+from opentelemetry.propagate import extract
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.sdk.trace.export import (
+    BatchSpanProcessor,
+    ConsoleSpanExporter,
+)
+from opentelemetry.trace import (
+    SpanKind,
+    get_tracer_provider,
+    set_tracer_provider,
+)
+
+# Opentelementry and Jaeger
+
+set_tracer_provider(TracerProvider())
+tracer = get_tracer_provider().get_tracer(__name__)
+
+get_tracer_provider().add_span_processor(
+    BatchSpanProcessor(ConsoleSpanExporter())
+)
+
+
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind(SERVER_ADDR)
 server.listen(1) 
@@ -46,25 +69,28 @@ def client_listen(client_socket, client_address):
 def main():
     global NUM_CLIENTS
     server.listen()
-    print(f"Server is listening on {HOST}:{PORT}")
-    try:
-        while True:
-            if threading.active_count() - 1 < MAX_CLIENTS:
-                
-                client_socket, client_address = server.accept()
-                thread = threading.Thread(target=client_listen, args=(client_socket, client_address))
-                thread.start()
-                NUM_CLIENTS += 1
-                
-                print(f"Number of Connections: {threading.active_count() - 1}")
-            else:
-                client_socket, client_address = server.reject()
-                # print("Server cannot accept new clients client limit has been reached")
-    except:
-        pass
+    with tracer.start_as_current_span(
+        "server_request",
+        kind=SpanKind.SERVER,
+    ):
+        print(f"Server is listening on {HOST}:{PORT}")
+        try:
+            while True:
+                if threading.active_count() - 1 < MAX_CLIENTS:
+                    
+                    client_socket, client_address = server.accept()
+                    thread = threading.Thread(target=client_listen, args=(client_socket, client_address))
+                    thread.start()
+                    NUM_CLIENTS += 1
+                    
+                    print(f"Number of Connections: {threading.active_count() - 1}")
+                else:
+                    client_socket, client_address = server.reject()
+                    # print("Server cannot accept new clients client limit has been reached")
+        except:
+            pass
 
         
 if __name__ == '__main__':
-   
     main()
     
