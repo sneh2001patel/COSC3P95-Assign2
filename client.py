@@ -4,6 +4,21 @@ import socket
 import threading
 from settings import *
 
+from opentelemetry import trace
+from opentelemetry.propagate import inject
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.sdk.trace.export import (
+    BatchSpanProcessor,
+    ConsoleSpanExporter,
+)
+
+trace.set_tracer_provider(TracerProvider())
+tracer = trace.get_tracer_provider().get_tracer(__name__)
+
+trace.get_tracer_provider().add_span_processor(
+    BatchSpanProcessor(ConsoleSpanExporter())
+)
+
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 try:
     client.connect(SERVER_ADDR)
@@ -51,7 +66,9 @@ def messaging_client():
                 break
             else:
                 try:
-                    send_file(client_data)
+                    with tracer.start_as_current_span("client"):
+                        with tracer.start_as_current_span("client-server"):
+                            send_file(client_data)
                 except:
                     print("\033[91mFile does not exist try again.\033[0m")
         client.close()
