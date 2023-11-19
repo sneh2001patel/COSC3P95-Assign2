@@ -6,6 +6,8 @@ from settings import *
 
 from opentelemetry.instrumentation.wsgi import collect_request_attributes
 from opentelemetry.propagate import extract
+from opentelemetry.exporter.jaeger.thrift import JaegerExporter
+
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import (
     BatchSpanProcessor,
@@ -17,10 +19,9 @@ from opentelemetry.trace import (
     set_tracer_provider,
 )
 # Opentelementry and Jaeger config
-
 set_tracer_provider(TracerProvider())
 tracer = get_tracer_provider().get_tracer(__name__)
-
+span_exporter = JaegerExporter(agent_host_name="localhost", agent_port=6831)
 get_tracer_provider().add_span_processor(
     BatchSpanProcessor(ConsoleSpanExporter())
 )

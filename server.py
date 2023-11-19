@@ -6,6 +6,7 @@ from settings import *
 from opentelemetry.instrumentation.wsgi import collect_request_attributes
 from opentelemetry.propagate import extract
 from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.exporter.jaeger.thrift import JaegerExporter
 from opentelemetry.sdk.trace.export import (
     BatchSpanProcessor,
     ConsoleSpanExporter,
@@ -17,10 +18,9 @@ from opentelemetry.trace import (
 )
 
 # Opentelementry and Jaeger
-
 set_tracer_provider(TracerProvider())
 tracer = get_tracer_provider().get_tracer(__name__)
-
+span_exporter = JaegerExporter(agent_host_name="localhost", agent_port=6831)
 get_tracer_provider().add_span_processor(
     BatchSpanProcessor(ConsoleSpanExporter())
 )
@@ -28,7 +28,7 @@ get_tracer_provider().add_span_processor(
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind(SERVER_ADDR)
-server.listen(1) 
+server.listen(5) 
 
 
 def client_listen(client_socket, client_address):
@@ -53,7 +53,7 @@ def client_listen(client_socket, client_address):
             print(f"\033[92mFile received successfully from {client_address[-1]}\033[0m")
 
         except:
-            print(f"\033[91m Client {client_address[-1]} has disconnected\033[0m")
+            # print(f"\033[91m Client {client_address[-1]} has disconnected\033[0m")
             # print(file_data)
             if file_data.lower() in EXIT:
                 break
