@@ -53,9 +53,8 @@ def client_listen(client_socket, client_address):
             print(f"\033[92mFile received successfully from {client_address[-1]}\033[0m")
 
         except:
-            # print(f"\033[91m Client {client_address[-1]} has disconnected\033[0m")
-            # print(file_data)
             if file_data.lower() in EXIT:
+                print(f"\033[91m Client {client_address[-1]} has disconnected\033[0m")
                 break
 
     client_socket.close()
