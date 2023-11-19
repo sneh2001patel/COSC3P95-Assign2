@@ -1,0 +1,39 @@
+{
+    "name": "client-server",
+    "context": {
+        "trace_id": "0xa3e766ce4e7e2fccf4f1aeaf904469f6",
+        "span_id": "0x99e7319e0123ce39",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "0xf5b78e50b223a685",
+    "start_time": "2023-11-19T21:50:35.446465Z",
+    "end_time": "2023-11-19T21:50:35.454558Z",
+    "status": {
+        "status_code": "ERROR",
+        "description": "FileNotFoundError: [Errno 2] No such file or directory: 'noname.txt'"
+    },
+    "attributes": {},
+    "events": [
+        {
+            "name": "exception",
+            "timestamp": "2023-11-19T21:50:35.454493Z",
+            "attributes": {
+                "exception.type": "FileNotFoundError",
+                "exception.message": "[Errno 2] No such file or directory: 'noname.txt'",
+                "exception.stacktrace": "Traceback (most recent call last):\n  File \"/Users/snehpatel/Documents/University/COSC3P95/venv/lib/python3.11/site-packages/opentelemetry/trace/__init__.py\", line 573, in use_span\n    yield span\n  File \"/Users/snehpatel/Documents/University/COSC3P95/venv/lib/python3.11/site-packages/opentelemetry/sdk/trace/__init__.py\", line 1055, in start_as_current_span\n    yield span_context\n  File \"/Users/snehpatel/Documents/University/COSC3P95/assign2/client.py\", line 80, in messaging_client\n    send_file(client_data)\n  File \"/Users/snehpatel/Documents/University/COSC3P95/assign2/client.py\", line 41, in send_file\n    file_size = os.path.getsize(file_path)\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<frozen genericpath>\", line 50, in getsize\nFileNotFoundError: [Errno 2] No such file or directory: 'noname.txt'\n",
+                "exception.escaped": "False"
+            }
+        }
+    ],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "telemetry.sdk.language": "python",
+            "telemetry.sdk.name": "opentelemetry",
+            "telemetry.sdk.version": "1.21.0",
+            "service.name": "unknown_service"
+        },
+        "schema_url": ""
+    }
+}

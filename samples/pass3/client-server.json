@@ -1,0 +1,27 @@
+{
+    "name": "client-server",
+    "context": {
+        "trace_id": "0xbe8499b6a8ed5e0824b6bf933ee71ab3",
+        "span_id": "0xe9565db09508c083",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "0x5f09f3478ec80e16",
+    "start_time": "2023-11-19T21:32:23.630269Z",
+    "end_time": "2023-11-19T21:32:23.645117Z",
+    "status": {
+        "status_code": "UNSET"
+    },
+    "attributes": {},
+    "events": [],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "telemetry.sdk.language": "python",
+            "telemetry.sdk.name": "opentelemetry",
+            "telemetry.sdk.version": "1.21.0",
+            "service.name": "unknown_service"
+        },
+        "schema_url": ""
+    }
+}

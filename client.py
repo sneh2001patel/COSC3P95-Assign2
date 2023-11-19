@@ -74,12 +74,11 @@ def messaging_client():
             elif client_data.lower() in EXIT:
                 break
             else:
-                try:
-                    with tracer.start_as_current_span("client"):
-                        with tracer.start_as_current_span("client-server"):
-                            send_file(client_data)
-                except:
-                    print("\033[91mFile does not exist try again.\033[0m")
+                # Bug Since it can accept files that do not exist
+                with tracer.start_as_current_span("client"):
+                    with tracer.start_as_current_span("client-server"):
+                        send_file(client_data)
+                    # print("\033[91mFile does not exist try again.\033[0m")
         client.close()
         quit()
 messaging_client()        
