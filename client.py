@@ -37,30 +37,33 @@ client_accept = True
 
 
 def send_file(file_path):
-    file_name = os.path.basename(file_path)
-    file_size = os.path.getsize(file_path)
-    if 5120 <= file_size <= 104857600:
-        file_data = {
-            "file_name": file_name,
-            "file_size": file_size
-        }
-        
-        data = json.dumps(file_data).encode(ENCODING)
-        client.send(data)
+    if os.path.isfile(file_path):
+        file_name = os.path.basename(file_path)
+        file_size = os.path.getsize(file_path)
+        if 5120 <= file_size <= 104857600:
+            file_data = {
+                "file_name": file_name,
+                "file_size": file_size
+            }
+            
+            data = json.dumps(file_data).encode(ENCODING)
+            client.send(data)
 
-        with open(file_path, 'rb') as file:
-            while True:
-                data = file.read(1024)
-                if not data:
-                    break
-                client.send(data)
-                
-        print("\033[92mFile sent successfully\033[0m")
-    else:
-        if file_size > 104857600:
-            print(f"\033[91mFile exceeds more than 100MB\033[0m")
+            with open(file_path, 'rb') as file:
+                while True:
+                    data = file.read(1024)
+                    if not data:
+                        break
+                    client.send(data)
+                    
+            print("\033[92mFile sent successfully\033[0m")
         else:
-            print(f"\033[91mFile is too small (less than than 5Kb) \033[0m")
+            if file_size > 104857600:
+                print(f"\033[91mFile exceeds more than 100MB\033[0m")
+            else:
+                print(f"\033[91mFile is too small (less than than 5Kb) \033[0m")
+    else:
+        print("File does not exist")
             
 
 def messaging_client():
